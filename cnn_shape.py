@@ -23,13 +23,22 @@ trainx = []
 trainy = []
 testx = []
 testy = []
-real_path = 'E:/deepfake/Celeb-DF/lstmcap/real/'
-fake_path = 'E:/deepfake/Celeb-DF/lstmcap/fake/'
+real_path = '/mnt/celeb-real-lstm/'
+fake_path = '/mnt/celeb-synthesis-lstm/'
 #pdb.set_trace()
 lstmnum = 1
 capnum = 18
 alltotal = 1200
 total = alltotal
+
+kernel = [[-1, 2, -2, 2, -1],
+            [2, -6, 8, -6, 2],
+            [-2, 8, -12, 8, -2],
+            [2, -6, 8, -6, 2],
+            [-1, 2, -2, 2, -1]]
+kernel = np.array((kernel), dtype="float32")
+
+
 for name in os.listdir(real_path):
     dd = []
     if total <= 0:
@@ -40,6 +49,7 @@ for name in os.listdir(real_path):
     try:
         img = cv2.imread(real_path+name)
         img = cv2.resize(img, (128, 100))
+        img = cv2.filter2D(img, -1, kernel)
     except:
         print(name)
         continue

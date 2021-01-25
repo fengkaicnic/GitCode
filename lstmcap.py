@@ -4,15 +4,16 @@ import cv2
 import os
 from mtcnn import MTCNN
 import sys
+import numpy as np
 
 detector = MTCNN()
 
 import pdb
 
 # pdb.set_trace()
-fname = 'E:/deepfake/Celeb-DF/Celeb-Synthesis/'
+fname = '/mnt/Celeb-synthesis/'
 # fname = 'Celeb-synthesis'
-savepath = 'E:/deepfake/Celeb-DF/lstmcap/fake/'
+savepath = '/mnt/celeb-synthesis-lstm/'
 # if not os.path.exists(fname + '_vcon/'):
 #     os.mkdir(fname + '_vcon/')
 
@@ -20,28 +21,31 @@ savepath = 'E:/deepfake/Celeb-DF/lstmcap/fake/'
 def save_img():
     videos = os.listdir(fname)
     ttt = 0
+    
     # videos = ['1', '2', '3']
     for video_name in videos:
-        # if video_name.split('_')[1] != 'id0' and ttt > 100:
-        if ttt > 160:
-            continue
+        if np.random.randint(5) >= 1:
+            continue 
         ttt += 1
+        if ttt%10 == 0:
+            print(video_name)
+        # if video_name.split('_')[1] != 'id0' and ttt > 100:
         file_name = video_name
         folder_name = video_name.split('.')[0]
 
-        vc = cv2.VideoCapture(fname + '/' + file_name)  # 读入视频文件
+        vc = cv2.VideoCapture(fname + '/' + file_name)
         c = 1
-        if vc.isOpened():  # 判断是否正常打开
+        if vc.isOpened():  
             rval, frame = vc.read()
         else:
             rval = False
 
-        timeF = 1  # 视频帧计数间隔频率
-        total = 18
+        timeF = 1  
+        total = 7
         # if not os.path.exists(savepath + folder_name):
         #     os.mkdir(savepath + folder_name)
 
-        while rval and total:  # 循环读取视频帧
+        while rval and total:
             try:
                 rval, frame = vc.read()
                 bb = detector.detect_faces(frame)
@@ -50,9 +54,9 @@ def save_img():
                 x, y, w, h = bb[0]['box']
                 # realimgs.append(frame[y-10:y+h+10, x-10:x+w+10])
                 pic_path = folder_name + '/'
-                if (c % timeF == 0):  # 每隔timeF帧进行存储操作
+                if (c % timeF == 0): 
                     cv2.imwrite(savepath + folder_name+'_'+ str(c) + '.jpg',
-                                frame[y - 10:y + h + 10, x - 10:x + w + 10])  # 存储为图像,保存名为 文件夹名_数字（第几个文件）.jpg
+                                frame[y - 10:y + h + 10, x - 10:x + w + 10])
                     total = total - 1
                 c = c + 1
 

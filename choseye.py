@@ -4,29 +4,34 @@ import cv2
 import os
 from mtcnn import MTCNN
 import sys
+import numpy as np
 
 detector = MTCNN()
 
 import pdb
 
 # pdb.set_trace()
-fname = 'd:/coded/testceleb/'
+fname = '/mnt/Celeb-synthesis/'
 # fname = 'Celeb-synthesis'
-savepath = 'd:/coded/eye/'
+savepath = '/mnt/celeb-synthesis-eye30/'
 # if not os.path.exists(fname + '_vcon/'):
 #     os.mkdir(fname + '_vcon/')
 
-
+vname = np.load('vname.npy')
+vname = vname.item()
 def save_img():
     videos = os.listdir(fname)
     ttt = 0
     # videos = ['1', '2', '3']
     pdb.set_trace()
     for video_name in videos:
-        # if video_name.split('_')[1] != 'id0' and ttt > 100:
-        if ttt > 160:
+        nss = video_name.split('.')
+        if vname.get(nss[0], None):
             continue
         ttt += 1
+        if ttt%10 == 0:
+            print(video_name)
+        # if video_name.split('_')[1] != 'id0' and ttt > 100:
         file_name = video_name
         folder_name = video_name.split('.')[0]
 
@@ -38,7 +43,7 @@ def save_img():
             rval = False
 
         timeF = 1
-        total = 18
+        total = 7
         # if not os.path.exists(savepath + folder_name):
         #     os.mkdir(savepath + folder_name)
 
@@ -51,7 +56,7 @@ def save_img():
                 x, y, w, h = bb[0]['box']
                 lefteye = bb[0]['keypoints']['left_eye']
                 righteye = bb[0]['keypoints']['right_eye']
-                if lefteye[0] - x > 20 and x + w - righteye[0] > 20:
+                if lefteye[0] - x > 30 and x + w - righteye[0] > 30:
                     #print(lefteye[0] - x, x + w -righteye[0])
                     continue
                 print(lefteye[0] - x, x + w -righteye[0])
@@ -70,3 +75,4 @@ def save_img():
 
 
 save_img()
+
