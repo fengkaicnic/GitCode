@@ -41,7 +41,7 @@ class BayarConstraint( Constraint ) :
         return w
 
 import generate_data
-trainx, trainy, testx, testy = generate_data.generate()
+#trainx, trainy, testx, testy = generate_data.generate()
 
 import createmodel
 
@@ -55,7 +55,7 @@ model.compile(loss=categorical_crossentropy,
              metrics=['accuracy'])
 
 batch_size = 32
-epochs = 60
+epochs = 5
 # pdb.set_trace()
 filepath = "weights-improvement-{epoch:02d}-{val_acc:.2f}.hdf5"
 
@@ -63,9 +63,12 @@ checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_o
                             mode='max')
 callbacks_list = [checkpoint]
 modelpath = sys.argv[1]
-model.load_weights(modelpath)
+if modelpath != 'none':
+    model.load_weights(modelpath)
 #pdb.set_trace()
-history = model.fit(trainx, trainy,
+while 1==1:
+    trainx, trainy, testx, testy = generate_data.generate()
+    history = model.fit(trainx, trainy,
          batch_size=batch_size,callbacks=callbacks_list,
          epochs=epochs, validation_data=(testx, testy))
 

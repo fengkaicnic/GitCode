@@ -1,4 +1,5 @@
 import os
+import pdb
 
 class switch(object):
     def __init__(self, value):
@@ -34,15 +35,15 @@ def getTestData(realpath, fakepath):
     for id in ids:
         iddct[id] = 0
         #pdb.set_trace()
-        for name in os.listdir(realpath):
-            ns = name.split('.')
-            nms = ns[0].split('_')
-            if iddct[nms[0]] < 9:
-                realdct[ns[0]] = 1
-                iddct[nms[0]] += 1
-            elif iddct[nms[0]] < 10:
-                realtdct[ns[0]] = 1
-                iddct[nms[0]] += 1
+    for name in os.listdir(realpath):
+        ns = name.split('.')
+        nms = ns[0].split('_')
+        if iddct[nms[0]] < 9:
+            realdct[ns[0]] = 1
+            iddct[nms[0]] += 1
+        elif iddct[nms[0]] < 10:
+            realtdct[ns[0]] = 1
+            iddct[nms[0]] += 1
 
     ids = ['id%d'% i for i in range(62)]
     for id in ids:

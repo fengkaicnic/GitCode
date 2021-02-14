@@ -28,10 +28,10 @@ def generate():
     real_video_path = '/mnt/Celeb-real/'    
     fake_video_path = '/mnt/Celeb-synthesis/'    
         
-    labelb = [0 for i in range(62)]    
-        
+    labelb = [0 for i in range(124)]    
+    
     rdct, rtdct, fdct, ftdct = utils.getTestData(real_video_path, fake_video_path)    
-    pdb.set_trace()
+    fnum = np.random.randint(1, 8)
     for name in os.listdir(real_path):    
         dd = []    
         #print(name)    
@@ -39,7 +39,7 @@ def generate():
         num = int(name.split('.')[0].split('_')[2])   
         #nb = '_' + name.split('.')[0].split('_')[-1] 
         nn = '_'.join(name.split('.')[0].split('_')[:2])    
-        if num == 5:    
+        if num == fnum:    
             try:    
                 for i in range(lstmnum):    
                     imgname = nn+'_'+str(num+i)+'.jpg'    
@@ -94,7 +94,7 @@ def generate():
                 continue    
             nnum = name.split('_')[0].replace('id', '')    
             labellst = copy.deepcopy(labelb)    
-            labellst[int(nnum)] = 1    
+            labellst[int(nnum)+62] = 1    
         
             if fdct.get(vdname, None):    
                 trainx.append(dd)    

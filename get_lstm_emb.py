@@ -18,6 +18,8 @@ import os
 import random
 from sklearn import metrics
 import createmodel
+import sys
+from utils import switch
 
 kernel = [[-1, 2, -2, 2, -1],
             [2, -6, 8, -6, 2],
@@ -25,7 +27,8 @@ kernel = [[-1, 2, -2, 2, -1],
             [2, -6, 8, -6, 2],
             [-1, 2, -2, 2, -1]]
 kernel = np.array((kernel), dtype="float32")
-rrate = 3
+rrate = int(sys.argv[1])
+#rrate = 3
 
 data = []
 y = []
@@ -40,7 +43,8 @@ fake_path = '/mnt/celeb-synthesis-eye/'
 #pdb.set_trace()
 lstmnum = 4
 capnum = 7
-alltotal = 800
+alltotal = int(sys.argv[2])
+#alltotal = 800
 total = alltotal
 ttname = ''
 vdname = ''
@@ -143,8 +147,26 @@ print(len(trainx))
 print(len(testx))
 print(podata, negdata)
 
+modelname = sys.argv[3]
+pdb.set_trace()
+for case in switch(modelname):
+    if case('m0'):
+       model = createmodel.create_m0()
+       break
+    if case('m1'):
+       model = createmodel.create_m1()
+       break
+    if case('m2'):
+       model = createmodel.create_m2()
+       break
+    if case('m3'):
+       model = createmodel.create_m3()
+       break
+    if case('m4'):
+       model = createmodel.create_m4()
+       break
 
-model = createmodel.create_m0()
+#model = createmodel.create_m0()
 
 def auroc(y_true, y_pred):
     return tf.py_func(metrics.roc_auc_score, (y_true, y_pred), tf.double)
@@ -162,9 +184,9 @@ checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_o
                             mode='max')
 callbacks_list = [checkpoint]
 
-
+modelweights = sys.argv[4]
 #model = load_model('weights-improvement-27-0.79.hdf5')
-model.load_weights('weights-m0-03-0.78.hdf5')
+model.load_weights(modelweights)
 
 flat_layer = Model(model.input, outputs=model.get_layer('flatten_1').output)
 
@@ -178,13 +200,14 @@ testyy = testy[:, 0]
 
 import catboost as ctb
 from catboost import CatBoostClassifier, CatBoostRegressor
-metricname = 'Accuracy'
+metricname = 'AUC'
+lossfunc = 'RMSE'
 #model = CatBoostClassifier(iterations=10000, depth=3, bagging_temperature=0.2, l2_leaf_reg=50,
-#                            custom_metric=metricname, learning_rate=0.5, eval_metric=metricname, loss_function='Logloss',
+#                            custom_metric=metricname, learning_rate=0.5, eval_metric=metricname, loss_function=lossfunc,
 #                            logging_level='Verbose')
 
 model = CatBoostRegressor(iterations=10000, depth=3, bagging_temperature=0.2, l2_leaf_reg=50,
-                            custom_metric=metricname, learning_rate=0.5, eval_metric=metricname, loss_function='Logloss',
+                            custom_metric=metricname, learning_rate=0.5, eval_metric=metricname, loss_function=lossfunc,
                             logging_level='Verbose')
 
 model.fit(train_out, trainyy,eval_set=(test_out, testyy), plot=False)
