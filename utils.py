@@ -66,3 +66,14 @@ def getTestData(realpath, fakepath):
     return realdct, realtdct, fakedct, faketdct
     #print(len(realdct), len(realtdct), len(faketdct), len(fakedct))
 
+def translabel(labels):
+	label = []
+	for lab in labels:
+		proba = max(lab)
+		index = lab.index(proba)
+		if index < 62:
+			label.append(proba, 0)
+		else:
+			label.append(0, proba)
+
+	return label
