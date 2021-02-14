@@ -17,8 +17,8 @@ savepath = '/mnt/celeb-synthesis-eye30/'
 # if not os.path.exists(fname + '_vcon/'):
 #     os.mkdir(fname + '_vcon/')
 
-vname = np.load('vname.npy')
-vname = vname.item()
+#vname = np.load('vname.npy')
+#vname = vname.item()
 def save_img():
     videos = os.listdir(fname)
     ttt = 0
@@ -26,8 +26,8 @@ def save_img():
     pdb.set_trace()
     for video_name in videos:
         nss = video_name.split('.')
-        if vname.get(nss[0], None):
-            continue
+ #       if vname.get(nss[0], None):
+ #           continue
         ttt += 1
         if ttt%10 == 0:
             print(video_name)
